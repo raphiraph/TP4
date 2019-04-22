@@ -103,7 +103,7 @@ def breed(mother, father):
         # Randomly select one of the parent's hyper parameter
         for param in nn_param_choices:
             baby_parameters[param] = random.choice(
-            [mother[1]["network"][param], father[1]["network"][param]]
+            [mother["network"][param], father["network"][param]]
             )
 
         # Create the new network
@@ -120,15 +120,14 @@ def breed(mother, father):
 # Determine who gets to survive
 def evolve(population):
     # Rank networks by their accuracy
-    grades = [(neural_network["accuracy"], neural_network) for neural_network in population]
-    sorted_grades = sorted(grades, key=lambda k: k[0], reverse=True)
+    sorted_population = sorted(population, key=lambda k: k["accuracy"], reverse=True)
 
     # How many networks will survive? Those who do get to become parents
-    retain_length = int(len(sorted_grades)*retain)
-    parents = sorted_grades[:retain_length]
+    retain_length = int(len(sorted_population)*retain)
+    parents = sorted_population[:retain_length]
 
     # We introduce a luck factor, each discarded network has a chance to be "saved"
-    for neural_network in sorted_grades[retain_length:]:
+    for neural_network in sorted_population[retain_length:]:
         if random_select > random.random():
             parents.append(neural_network)
 
