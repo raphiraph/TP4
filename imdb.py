@@ -9,7 +9,7 @@ from keras.preprocessing import sequence
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Initiate random parameters
+# Initiate the random hyper parameters
 nn_param_choices = {
     'nb_neurons': [5, 10, 25, 50, 75, 100],
     'activation': ['softmax', 'relu', 'elu', 'tanh', 'sigmoid'],
@@ -23,7 +23,7 @@ retain = 0.2
 random_select = 0.1
 mutate_chance = 0.2
 
-# Data set variables
+# Dataset variables
 seed = 20
 top_words = 5000
 max_words = 200
@@ -34,7 +34,7 @@ def create_population(population_size):
     for _ in range(0, population_size):
         neural_network = {"accuracy": 0., "network":{}}
         for key in nn_param_choices:
-            # Assign random hyper parameters to the networks
+            # Assign random hyper parameters to each network
             neural_network["network"][key] = random.choice(nn_param_choices[key])
         population.append(neural_network)
     return population
@@ -46,7 +46,7 @@ def train_population(population):
     X_train = sequence.pad_sequences(X_train, maxlen=max_words)
     X_test = sequence.pad_sequences(X_test, maxlen=max_words)
 
-    # For graph
+    # For graph purposes
     histories = []
 
     for neural_network in population:
@@ -99,7 +99,7 @@ def mutate(neural_network):
 # Breed a child from two parents
 def breed(mother, father):
     babies = []
-    # We breed one child for every parent, therefore two children
+    # We breed one child for every parent, therefore we breed two children
     for _ in range(2):
 
         baby_parameters = {}
@@ -110,7 +110,7 @@ def breed(mother, father):
             [mother["network"][param], father["network"][param]]
             )
 
-        # Create the new network
+        # Create a new network
         baby = {"accuracy": 0., "network": baby_parameters}
 
         # Some children will mutate
@@ -130,12 +130,12 @@ def evolve(population):
     retain_length = int(len(sorted_population)*retain)
     parents = sorted_population[:retain_length]
 
-    # We introduce a luck factor, each discarded network has a chance to be "saved"
+    # We introduce a luck factor. Each discarded network has a chance to be "saved"
     for neural_network in sorted_population[retain_length:]:
         if random_select > random.random():
             parents.append(neural_network)
 
-    # How many places is there to fill ?
+    # How many places are there to fill ?
     parents_length = len(parents)
     desired_length = len(population) - parents_length
     children = []
